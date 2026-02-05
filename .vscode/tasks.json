@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build & Run C++ (with input)",
+            "type": "shell",
+            "command": "g++ -std=gnu++17 -O2 ${file} -o main && ./main < inputf.in > outputf.in",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "never",
+                "panel": "shared",
+                "clear": true
+            }
+        }
+    ]
+}
+
