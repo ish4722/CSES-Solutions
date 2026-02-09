@@ -38,24 +38,23 @@ const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
-int cal(int n, vector<int>& dp){
-    if(n==0) return 0;
-    if(dp[n] != -1) return dp[n];
-    int ans = 1e9;
-    int temp=n;
-    while(temp){
-        int d=temp%10;
-        if(d) ans = min(ans, 1+cal(n-d, dp));
-        temp/=10;
-    }
-    return dp[n] = ans;
-}
 
+int dfs(int i, int j, vector<vector<char>>& matrix, int n,vector<vector<int>>& dp){
+    if(i>=n || j>=n || matrix[i][j] == '*') return 0;
+    if(dp[i][j] != -1) return dp[i][j];
+    if(i==n-1 && j==n-1) return 1;
+    return dp[i][j]= (dfs(i+1, j, matrix, n,dp) + dfs(i, j+1, matrix, n,dp))%mod;
+}
 void solve() {
     int n;
-    cin>>n;
-    vector<int> dp(n+1, -1);
-    cout<<cal(n, dp)<<endl;
+    cin >> n;
+    vector<vector<char>> matrix(n, vector<char>(n));
+    vector<vector<int>> dp(n, vector<int>(n, -1));
+
+    f(i,0,n) f(j,0,n) cin >> matrix[i][j];
+
+    cout<<dfs(0, 0, matrix, n,dp)<<endl;
+
 }
 
 signed main() {
