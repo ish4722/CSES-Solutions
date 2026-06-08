@@ -1,80 +1,74 @@
+//good qustion of two pointers
+
 #include <iostream>
 #include <vector>
-#include <algorithm>
-#include <cmath>
-#include <numeric>
-#include <map>
-#include <set>
-#include <unordered_map>
-#include <unordered_set>
-#include <queue>
-#include <stack>
-#include <deque>
 #include <string>
-#include <sstream>
-#include <iomanip>
-#include <chrono>
-#include <random>
-#include <cassert>
+#include <cmath>
 
 using namespace std;
 
-
-mt19937_64 RNG(chrono::steady_clock::now().time_since_epoch().count());
-
-#define ez ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 #define int long long
-#define all(x) (x).begin(), (x).end()
-#define endl "\n"
-#define f(i,a,b) for(int i=a; i<b; i++)
-#define getv(v, n) vector<int> v(n); f(i,0,n) cin >> v[i];
+#define ez ios_base::sync_with_stdio(false); cin.tie(NULL);
 
-typedef vector<int> vi;
-typedef vector<bool> vb;
-typedef vector<vi> vvi;
-typedef vector<pair<int,int>> vpi;
-
-const int mod = 1000000007;
-
-int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
+// Helper to "undo" or "do" a move
+void update(int& cx, int& cy, char move, int delta) {
+    if (move == 'U') cy += delta;
+    else if (move == 'D') cy -= delta;
+    else if (move == 'L') cx -= delta;
+    else if (move == 'R') cx += delta;
+}
 
 void solve() {
     int n;
     cin >> n;
     string s;
     cin >> s;
-    int x,y;
-    cin >> x >> y;
+    int tx, ty;
+    cin >> tx >> ty;
 
-    if(x==0 && y==0){
-        cout << 0 << endl;
-        return;
-    }
-    if((n-x-y)%2!=0 || abs(x)+abs(y)>n){
+    // Basic parity and distance check
+    int total_dist = abs(tx) + abs(ty);
+    if (total_dist > n || (n - total_dist) % 2 != 0) {
         cout << -1 << endl;
         return;
     }
 
-    int x1=0, y1=0;
-    for(int i=0;i<n;i++){
-        if(s[i]=='U') y1++;
-        else if(s[i]=='D') y1--;
-        else if(s[i]=='L') x1--;
-        else x1++;
+    // Current position if we change nothing
+    int cx = 0, cy = 0;
+    for (char c : s) update(cx, cy, c, 1);
+
+    // If already at target
+    if (cx == tx && cy == ty) {
+        cout << 0 << endl;
+        return;
     }
 
-    int ans=0;
-    ans+=abs(x-x1)/2+abs(y-y1)/2;
-    cout << ans << endl;
+    int L = 0, ans = n + 1;
+    for (int R = 0; R < n; R++) {
+        // "Remove" the current move from the robot's path to put it in the changeable window
+        update(cx, cy, s[R], -1);
 
+        // Try to shrink the window from the left
+        while (L <= R) {
+            int window_size = R - L + 1;
+            int needed = abs(tx - cx) + abs(ty - cy);
+
+            if (needed <= window_size && (window_size - needed) % 2 == 0) {
+                ans = min(ans, window_size);
+                // To shrink, we "add back" the move at L to the fixed path
+                update(cx, cy, s[L], 1);
+                L++;
+            } else {
+                break;
+            }
+        }
+    }
+
+    cout << (ans > n ? -1 : ans) << endl;
 }
 
 signed main() {
     ez;
-
-    int t = 1;
-    // cin >> t;
-    while (t--) solve();
-
+    solve();
     return 0;
 }
