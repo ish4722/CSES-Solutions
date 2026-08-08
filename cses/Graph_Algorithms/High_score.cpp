@@ -17,7 +17,6 @@
 #include <random>
 #include <cassert>
 #include <climits>
-
 using namespace std;
 
 
@@ -40,51 +39,60 @@ const int mod = 1000000007;
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
 void solve() {
-    int n,m;
-    cin>>n>>m;
+    int n, m;
+    cin >> n >> m;
 
-    vector<vector<int>> adj(n+1);
-    f(i,0,m){
-        int u,v;
-        cin>>u>>v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
+    vector<tuple<int,int,int>> edges;
+    vector<vector<int>> rev(n + 1);
+
+    for (int i = 0; i < m; i++) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        edges.push_back({a, b, c});
+        rev[b].push_back(a);
     }
-    vector<int> dist(n+1,INT_MAX);
-    vector<int> parent(n+1,-1);
-    dist[1]=0;
+
+    // Mark all nodes that can reach n
+    vector<int> canReach(n + 1, 0);
     queue<int> q;
-    q.push(1);
+    q.push(n);
+    canReach[n] = 1;
 
     while (!q.empty()) {
         int u = q.front();
         q.pop();
 
-        if (u == n) break;
-
-        for (int v : adj[u]) {
-            if (dist[v] == INT_MAX) {
-                dist[v] = dist[u] + 1;
-                parent[v] = u;
+        for (int v : rev[u]) {
+            if (!canReach[v]) {
+                canReach[v] = 1;
                 q.push(v);
             }
         }
     }
-    if(dist[n]==INT_MAX){
-        cout<<"IMPOSSIBLE"<<endl;
-        return;
-    }
-    else {
-        cout<<dist[n]+1<<endl;
-        vector<int> ans;
-        int curr=n;
-        while(curr!=-1){
-            ans.push_back(curr);
-            curr=parent[curr];
+
+    const long long NEG_INF = -(1LL << 60);
+    vector<long long> dist(n + 1, NEG_INF);
+    dist[1] = 0;
+
+    // Bellman-Ford for maximum distance
+    for (int i = 1; i <= n - 1; i++) {
+        for (auto [u, v, w] : edges) {
+            if (dist[u] == NEG_INF) continue;
+            dist[v] = max(dist[v], dist[u] + w);
         }
-        reverse(all(ans));
-        for(auto &x: ans) cout<<x<<" ";
     }
+
+    // Check for useful positive cycles
+    for (auto [u, v, w] : edges) {
+        if (dist[u] == NEG_INF) continue;
+
+        if (dist[v] < dist[u] + w && canReach[v]) {
+            cout << -1 << endl;
+            return;
+        }
+    }
+
+    cout << dist[n] << endl;
 }
 
 signed main() {

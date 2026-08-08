@@ -16,7 +16,6 @@
 #include <chrono>
 #include <random>
 #include <cassert>
-#include <climits>
 
 using namespace std;
 
@@ -38,52 +37,62 @@ typedef vector<pair<int,int>> vpi;
 const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
-
+//djistra dimag mai bhi naa aaye smjhe for directed
 void solve() {
     int n,m;
-    cin>>n>>m;
+    cin >> n >> m;
 
     vector<vector<int>> adj(n+1);
-    f(i,0,m){
-        int u,v;
-        cin>>u>>v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
-    vector<int> dist(n+1,INT_MAX);
-    vector<int> parent(n+1,-1);
-    dist[1]=0;
+    vector<int> indegree(n+1, 0);
     queue<int> q;
-    q.push(1);
+    f(i,0,m) {
+        int a,b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        indegree[b]++;
+    }
+    f(i,1,n+1) {
+        if(indegree[i] == 0) q.push(i);
+    }
+    vector<int> ans;
 
-    while (!q.empty()) {
-        int u = q.front();
+    while(!q.empty()){
+        int node=q.front();
         q.pop();
+        ans.push_back(node);
 
-        if (u == n) break;
+        for(auto it: adj[node]){
+            indegree[it]--;
+            if(indegree[it]==0) q.push(it);
+        }
+    }
+    //dp[u] = length of the longest path from node 1 to u
 
-        for (int v : adj[u]) {
-            if (dist[v] == INT_MAX) {
-                dist[v] = dist[u] + 1;
-                parent[v] = u;
-                q.push(v);
+    vector<int> dp(n+1, -1e9);
+    vector<int> parent(n+1, -1);
+    dp[1]=1;
+
+    for(int u:ans){
+        for(int v:adj[u]){
+            if(dp[u]!=-1e9 && dp[v]<dp[u]+1){
+                dp[v]=dp[u]+1;
+                parent[v]=u;
             }
         }
     }
-    if(dist[n]==INT_MAX){
-        cout<<"IMPOSSIBLE"<<endl;
-        return;
+    if(dp[n] == -1e9){
+    cout << "IMPOSSIBLE\n";
+    return;
     }
-    else {
-        cout<<dist[n]+1<<endl;
-        vector<int> ans;
-        int curr=n;
-        while(curr!=-1){
-            ans.push_back(curr);
-            curr=parent[curr];
-        }
-        reverse(all(ans));
-        for(auto &x: ans) cout<<x<<" ";
+    cout<<dp[n]<<endl;
+    vector<int> topo;
+    while(n!=-1){
+        topo.push_back(n);
+        n=parent[n];
+    }
+    reverse(all(topo));
+    f(i,0,topo.size()){
+        cout<<topo[i]<<" ";
     }
 }
 

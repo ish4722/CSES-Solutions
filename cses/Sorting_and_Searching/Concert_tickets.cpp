@@ -16,7 +16,6 @@
 #include <chrono>
 #include <random>
 #include <cassert>
-#include <climits>
 
 using namespace std;
 
@@ -41,50 +40,30 @@ int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
 void solve() {
     int n,m;
-    cin>>n>>m;
+    cin >> n >> m;
 
-    vector<vector<int>> adj(n+1);
-    f(i,0,m){
-        int u,v;
-        cin>>u>>v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
+
+    multiset<int> tickets;
+    for(int i=0; i<n; i++) {
+        int x;
+        cin >> x;
+        tickets.insert(x);
     }
-    vector<int> dist(n+1,INT_MAX);
-    vector<int> parent(n+1,-1);
-    dist[1]=0;
-    queue<int> q;
-    q.push(1);
 
-    while (!q.empty()) {
-        int u = q.front();
-        q.pop();
+    while(m--){
+        int x;
+        cin>>x;
+        auto it = tickets.upper_bound(x);
 
-        if (u == n) break;
-
-        for (int v : adj[u]) {
-            if (dist[v] == INT_MAX) {
-                dist[v] = dist[u] + 1;
-                parent[v] = u;
-                q.push(v);
-            }
+        if(it == tickets.begin()) {
+            cout << -1 << endl;
+        } else {
+            it--;
+            cout << *it << endl;
+            tickets.erase(it);
         }
     }
-    if(dist[n]==INT_MAX){
-        cout<<"IMPOSSIBLE"<<endl;
-        return;
-    }
-    else {
-        cout<<dist[n]+1<<endl;
-        vector<int> ans;
-        int curr=n;
-        while(curr!=-1){
-            ans.push_back(curr);
-            curr=parent[curr];
-        }
-        reverse(all(ans));
-        for(auto &x: ans) cout<<x<<" ";
-    }
+
 }
 
 signed main() {

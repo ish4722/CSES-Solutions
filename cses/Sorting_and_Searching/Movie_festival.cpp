@@ -16,7 +16,6 @@
 #include <chrono>
 #include <random>
 #include <cassert>
-#include <climits>
 
 using namespace std;
 
@@ -39,52 +38,27 @@ const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
+bool comp(pair<int,int> a, pair<int,int> b) {
+    return a.second < b.second;
+}
 void solve() {
-    int n,m;
-    cin>>n>>m;
+    int n;
+    cin>>n;
 
-    vector<vector<int>> adj(n+1);
-    f(i,0,m){
-        int u,v;
-        cin>>u>>v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
+    vector<pair<int,int>> v(n);
+
+    f(i,0,n) {
+        cin>>v[i].first>>v[i].second;
     }
-    vector<int> dist(n+1,INT_MAX);
-    vector<int> parent(n+1,-1);
-    dist[1]=0;
-    queue<int> q;
-    q.push(1);
-
-    while (!q.empty()) {
-        int u = q.front();
-        q.pop();
-
-        if (u == n) break;
-
-        for (int v : adj[u]) {
-            if (dist[v] == INT_MAX) {
-                dist[v] = dist[u] + 1;
-                parent[v] = u;
-                q.push(v);
-            }
+    sort(all(v), comp);
+    int end_time = 0,ans=0;
+    for(auto [start, end]: v) {
+        if(start >= end_time) {
+            ans++;
+            end_time = end;
         }
     }
-    if(dist[n]==INT_MAX){
-        cout<<"IMPOSSIBLE"<<endl;
-        return;
-    }
-    else {
-        cout<<dist[n]+1<<endl;
-        vector<int> ans;
-        int curr=n;
-        while(curr!=-1){
-            ans.push_back(curr);
-            curr=parent[curr];
-        }
-        reverse(all(ans));
-        for(auto &x: ans) cout<<x<<" ";
-    }
+    cout<<ans<<endl;
 }
 
 signed main() {

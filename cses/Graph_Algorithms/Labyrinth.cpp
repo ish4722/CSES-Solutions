@@ -1,4 +1,5 @@
-//good qustion, bfs, backtracking
+// //good qustion, bfs, backtracking
+// my second approach need no backtracking lol but will give TLE
 
 #include <iostream>
 #include <vector>
@@ -86,3 +87,72 @@ int main() {
     cout << path.size() << "\n";
     cout << path << "\n";
 }
+
+// using namespace std;
+
+// int main() {
+//     int n, m;
+//     cin >> n >> m;
+
+//     vector<string> grid(n);
+
+//     pair<int,int> start, end;
+
+//     for (int i = 0; i < n; i++) {
+//         cin >> grid[i];
+//         for (int j = 0; j < m; j++) {
+//             if (grid[i][j] == 'A') start = {i, j};
+//             if (grid[i][j] == 'B') end = {i, j};
+//         }
+//     }
+
+//     priority_queue<
+//         pair<pair<int,string>, pair<int,int>>,
+//         vector<pair<pair<int,string>, pair<int,int>>>,
+//         greater<pair<pair<int,string>, pair<int,int>>>
+//     > pq;
+
+//     vector<vector<bool>> vis(n, vector<bool>(m, false));
+
+//     pq.push({{0, ""}, start});
+
+//     int dx[] = {-1, 1, 0, 0};
+//     int dy[] = {0, 0, -1, 1};
+//     char dir[] = {'U', 'D', 'L', 'R'};
+
+//     while (!pq.empty()) {
+
+//         auto cur = pq.top();
+//         pq.pop();
+
+//         int dist = cur.first.first;
+//         string path = cur.first.second;
+//         int x = cur.second.first;
+//         int y = cur.second.second;
+
+//         if (vis[x][y]) continue;
+//         vis[x][y] = true;
+
+//         if (make_pair(x, y) == end) {
+//             cout << "YES\n";
+//             cout << dist << "\n";
+//             cout << path << "\n";
+//             return 0;
+//         }
+
+//         for (int k = 0; k < 4; k++) {
+//             int nx = x + dx[k];
+//             int ny = y + dy[k];
+
+//             if (nx < 0 || ny < 0 || nx >= n || ny >= m)
+//                 continue;
+
+//             if (grid[nx][ny] == '#' || vis[nx][ny])
+//                 continue;
+
+//             pq.push({{dist + 1, path + dir[k]}, {nx, ny}});
+//         }
+//     }
+
+//     cout << "NO\n";
+// }
