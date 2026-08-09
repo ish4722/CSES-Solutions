@@ -55,13 +55,9 @@ void solve() {
     f(i,0,n) cin >> price[i];
     f(i,0,n) cin >> pages[i];
 
-    // vector<vector<int>> dp(n, vector<int>(m+1, 0));
+    // vector<vector<int>> dp(n+1should, vector<int>(m+1, 0));
     // //this was like at i==0 sum must be atleast price[0] to take the book
-    // f(j,0,m+1){
-    //     if(j-price[0]>=0) dp[0][j]=pages[0];
-    //     else
-    //     dp[0][j] = 0;
-    // }
+
     // f(i,1,n){
     //     f(j,0,m+1){
     //         int take=0;

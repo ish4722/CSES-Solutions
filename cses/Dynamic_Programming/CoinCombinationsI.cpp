@@ -40,7 +40,8 @@ int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
 
 
-//in this qus order doesnt matters so we put a loop directly and a single d was needed
+//in this qus order doesnt matters so we put a loop directly 
+//and a single d was needed
 
 int cal(int i,vector<int> & dp,vector<int> & v){
     if(i==0) return 1;

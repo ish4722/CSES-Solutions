@@ -74,7 +74,9 @@ void solve() {
     vector<int> dp(n+1,0);
 // dp[i] = maximum money we can earn using only the first i projects
     f(i,1,n+1) {
-        int idx = lower_bound(all(end),v[i-1][1]) - end.begin(); // Find last project that ends before start
+        //we have 2 choices,nontake=dp[i-1] and take, but if we take then
+        // But we can only take projects that finish before this project starts
+        int idx = lower_bound(all(end),v[i-1][1]) - end.begin(); 
         dp[i] = max(dp[i-1], dp[idx] + v[i-1][2]);
     }
     cout << dp[n] << endl;

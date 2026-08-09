@@ -43,7 +43,8 @@ int cal(int i,int j,vector<int>& v,vector<vector<int>>& dp){
     if(i>j) return 0;
     if(dp[i][j]!=-1) return dp[i][j];
     int sum=0;
-    sum=max(v[i]+min(cal(i+2,j,v,dp) , cal(i+1,j-1,v,dp)),v[j]+min(cal(i,j-2,v,dp),cal(i+1,j-1,v,dp)));
+    sum=max(v[i]+min(cal(i+2,j,v,dp) , cal(i+1,j-1,v,dp)),
+            v[j]+min(cal(i,j-2,v,dp),cal(i+1,j-1,v,dp)));
     return dp[i][j]= sum;
 }
 void solve() {

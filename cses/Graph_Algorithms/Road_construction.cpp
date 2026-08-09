@@ -38,17 +38,53 @@ const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
+
+vector<int> parent,sz;
+
+int parent_find(int a) {
+    if (parent[a] == a) return a;
+    return parent[a] = parent_find(parent[a]);
+}
+
+bool unionbysize(int a, int b) {
+    int u = parent_find(a);
+    int v = parent_find(b);
+
+    if (u == v) return false;
+
+    if (sz[u] < sz[v]) swap(u, v);
+
+    parent[v] = u;
+    sz[u] += sz[v];
+
+    return true;
+}
+
 void solve() {
-    int n;
-    cin >> n;
-    vector <int> a(n);
-    f(i, 0, n) cin >> a[i];
-    sort(all(a));
-    int sum=0;
-    for(int i=0;i<n;i++){
-        sum+=abs(a[i]-a[(n-1)/2]);
+    int n, m;
+    cin >> n >> m;
+
+    parent.resize(n + 1);
+    sz.assign(n + 1, 1);
+
+    for (int i = 1; i <= n; i++) parent[i] = i;
+
+    int components = n;
+    int maxi = 1;
+
+    while (m--) {
+        int a, b;
+        cin >> a >> b;
+
+        if (unionbysize(a, b)) {
+            components--;
+
+            int root = parent_find(a);
+            maxi = max(maxi, sz[root]);
+        }
+
+        cout << components << " " << maxi << '\n';
     }
-    cout<<sum<<endl;
 }
 
 signed main() {

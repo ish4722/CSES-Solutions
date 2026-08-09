@@ -38,17 +38,32 @@ const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
-void solve() {
-    int n;
-    cin >> n;
-    vector <int> a(n);
-    f(i, 0, n) cin >> a[i];
-    sort(all(a));
-    int sum=0;
-    for(int i=0;i<n;i++){
-        sum+=abs(a[i]-a[(n-1)/2]);
+bool check(int mid, vector<int>& machines, int t){
+    int total=0;
+    for(int i=0;i<machines.size();i++){
+        total+=mid/machines[i];
+        if(total>=t) return true;
     }
-    cout<<sum<<endl;
+    return false;
+}
+void solve() {
+    int n,t;
+    cin>>n>>t;
+
+    vector<int> machines(n);
+    f(i,0,n) cin>>machines[i];
+
+    sort(all(machines));
+
+    int low=0,high=machines[n-1]*t;
+
+    while(low<high){
+        int mid=(low+high)/2;
+
+        if(check(mid,machines,t)) high=mid;
+        else low=mid+1;
+    }
+    cout<<low<<endl;
 }
 
 signed main() {

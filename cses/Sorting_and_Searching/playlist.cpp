@@ -41,14 +41,22 @@ int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 void solve() {
     int n;
     cin >> n;
-    vector <int> a(n);
-    f(i, 0, n) cin >> a[i];
-    sort(all(a));
-    int sum=0;
-    for(int i=0;i<n;i++){
-        sum+=abs(a[i]-a[(n-1)/2]);
+    vector<int> v(n);
+    for (int i = 0; i < n; i++) {
+        cin >> v[i];
     }
-    cout<<sum<<endl;
+    int l=0,r=0,maxi=0;
+    map<int,int> mp;
+    while(r<n){
+        mp[v[r]]++;
+        while(mp[v[r]]>1){
+            mp[v[l]]--;
+            l++;
+        }
+        maxi=max(maxi,r-l+1);
+        r++;
+    }
+    cout << maxi << endl;
 }
 
 signed main() {

@@ -39,16 +39,45 @@ const int mod = 1000000007;
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
 void solve() {
-    int n;
-    cin >> n;
-    vector <int> a(n);
-    f(i, 0, n) cin >> a[i];
-    sort(all(a));
-    int sum=0;
-    for(int i=0;i<n;i++){
-        sum+=abs(a[i]-a[(n-1)/2]);
+    int n,m;
+    cin>>n>>m;
+
+    vector<vector<pair<int,int>>> adj(n+1);
+
+    f(i,0,m){
+        int a,b,c;
+        cin>>a>>b>>c;
+        adj[a].push_back({b,c});
+        adj[b].push_back({a,c});
     }
-    cout<<sum<<endl;
+
+    priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
+    vector<int> vis(n+1,0); 
+    pq.push({0,1});
+    int sum=0;
+    int cnt=0;
+    while(!pq.empty()){
+        auto p=pq.top();
+        pq.pop();
+        int node=p.second;
+        int wt=p.first;
+
+        if(vis[node]) continue;
+        vis[node]=1;
+        cnt++;
+        sum+=wt;
+        for(auto i:adj[node]){
+            if(!vis[i.first]){
+                pq.push({i.second,i.first});
+            }
+        }
+    }
+    if (cnt != n) {
+        cout << "IMPOSSIBLE\n";
+    }
+    else {
+        cout<<sum<<'\n';
+    }
 }
 
 signed main() {

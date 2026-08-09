@@ -41,14 +41,39 @@ int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 void solve() {
     int n;
     cin >> n;
-    vector <int> a(n);
-    f(i, 0, n) cin >> a[i];
-    sort(all(a));
-    int sum=0;
+
+    vector<tuple<int,int,int>> customers;
+
     for(int i=0;i<n;i++){
-        sum+=abs(a[i]-a[(n-1)/2]);
+        int a,b;
+        cin >> a >> b;
+        customers.push_back({a,b,i});
     }
-    cout<<sum<<endl;
+
+    sort(all(customers));//sorted by arrival time as it matter for next customer
+
+    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+    vector<int> ans(n);
+    int rooms=0;
+
+    for(auto [a,b,idx] : customers){//if arrival >departure the room will be free
+        if(!pq.empty() && pq.top().first <a){// that room can be reused
+            auto [end_time, room_number] = pq.top(); // departure,room_no
+            pq.pop();
+            ans[idx] = room_number;
+            pq.push({b, room_number});
+        }
+        else{
+            rooms++;
+            ans[idx] = rooms;
+            pq.push({b, rooms});
+        }
+    }
+    cout << rooms << endl;
+    for(int i=0;i<n;i++){
+        cout << ans[i] << " ";
+    }
+
 }
 
 signed main() {

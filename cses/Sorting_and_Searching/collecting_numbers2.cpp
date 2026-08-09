@@ -39,17 +39,54 @@ const int mod = 1000000007;
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
 void solve() {
-    int n;
-    cin >> n;
-    vector <int> a(n);
-    f(i, 0, n) cin >> a[i];
-    sort(all(a));
-    int sum=0;
-    for(int i=0;i<n;i++){
-        sum+=abs(a[i]-a[(n-1)/2]);
+    int n, m;
+    cin >> n >> m;
+
+    vector<int> a(n + 1), pos(n + 1);
+
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+        pos[a[i]] = i;
     }
-    cout<<sum<<endl;
+
+    int ans = 1;
+    for (int i = 1; i < n; i++)
+        if (pos[i] > pos[i + 1])
+            ans++;
+
+    while (m--) {
+        int l, r;
+        cin >> l >> r;
+
+        int x = a[l];
+        int y = a[r];
+
+        set<pair<int,int>> check;
+
+        if (x > 1) check.insert({x - 1, x});
+        if (x < n) check.insert({x, x + 1});
+        if (y > 1) check.insert({y - 1, y});
+        if (y < n) check.insert({y, y + 1});
+
+        // Remove old contributions
+        for (auto [u, v] : check)
+            if (pos[u] > pos[v])
+                ans--;
+
+        // Perform swap
+        swap(a[l], a[r]);
+        swap(pos[x], pos[y]);
+
+        // Add new contributions
+        for (auto [u, v] : check)
+            if (pos[u] > pos[v])
+                ans++;
+
+        cout << ans << '\n';
+    }
 }
+    
+
 
 signed main() {
     ez;

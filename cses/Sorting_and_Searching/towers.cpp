@@ -41,14 +41,24 @@ int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 void solve() {
     int n;
     cin >> n;
-    vector <int> a(n);
-    f(i, 0, n) cin >> a[i];
-    sort(all(a));
-    int sum=0;
-    for(int i=0;i<n;i++){
-        sum+=abs(a[i]-a[(n-1)/2]);
+
+    multiset<int> towers;
+
+    while (n--) {
+        int x;
+        cin >> x;
+
+        auto it = towers.upper_bound(x);
+
+        if (it == towers.end()) {
+            towers.insert(x);
+        } else {
+            towers.erase(it);
+            towers.insert(x);
+        }
     }
-    cout<<sum<<endl;
+
+    cout << towers.size() << '\n';
 }
 
 signed main() {

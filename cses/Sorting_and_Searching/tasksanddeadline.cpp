@@ -37,18 +37,26 @@ typedef vector<pair<int,int>> vpi;
 const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
-
+bool comp(pair<int, int> a, pair<int, int> b) {
+    return a.first< b.first;
+}
 void solve() {
     int n;
     cin >> n;
-    vector <int> a(n);
-    f(i, 0, n) cin >> a[i];
-    sort(all(a));
-    int sum=0;
-    for(int i=0;i<n;i++){
-        sum+=abs(a[i]-a[(n-1)/2]);
+
+    vector<pair<int, int>> tasks(n);
+    f(i, 0, n) {
+        cin >> tasks[i].first >> tasks[i].second;
     }
-    cout<<sum<<endl;
+    sort(all(tasks), comp);
+
+    int timer=0,ans=0;
+
+    for(int i=0;i<n;i++){
+        timer+=tasks[i].first;
+        ans+=tasks[i].second-timer;
+    }
+    cout<<ans<<endl;
 }
 
 signed main() {

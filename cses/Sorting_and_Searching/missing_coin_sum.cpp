@@ -40,15 +40,24 @@ int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
 void solve() {
     int n;
-    cin >> n;
-    vector <int> a(n);
-    f(i, 0, n) cin >> a[i];
-    sort(all(a));
-    int sum=0;
-    for(int i=0;i<n;i++){
-        sum+=abs(a[i]-a[(n-1)/2]);
+    cin>>n;
+    vector<int> coins;
+    f(i,0,n) {
+        int x;
+        cin>>x;
+        coins.push_back(x);
     }
-    cout<<sum<<endl;
+    sort(all(coins));
+
+    int reachable = 0;
+
+    for(int coin : coins) {
+        if(coin > reachable + 1) {
+            break;
+        }
+        reachable += coin;
+    }
+    cout << reachable + 1 << endl;
 }
 
 signed main() {
