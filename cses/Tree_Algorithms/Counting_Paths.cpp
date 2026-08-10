@@ -1,4 +1,5 @@
-//in this qus u learn abvout finding the nodes in a path so we use sam difference techniwue initially 
+//in this qus u learn abvout finding the nodes in a path
+//so we use sam difference techniwue initially 
 //then we perform a dfs to accumulate the results 
 
 #include <iostream>

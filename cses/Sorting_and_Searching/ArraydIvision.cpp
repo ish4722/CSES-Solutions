@@ -38,38 +38,37 @@ const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
-void solve() {
-    int x, n;
-    cin >> x >> n;
-
-    set<int> lights;
-    multiset<int> gaps;
-
-    lights.insert(0);
-    lights.insert(x);
-    gaps.insert(x);
-
-    for (int i = 0; i < n; i++) {
-        int p;
-        cin >> p;
-        //saw the constraint tab idea aaya for binary search approach
-        auto it = lights.lower_bound(p);
-
-        int right = *it;
-        --it;
-        int left = *it;
-
-        // Remove old gap
-        gaps.erase(gaps.find(right - left));
-
-        // Add two new gaps
-        gaps.insert(p - left);
-        gaps.insert(right - p);
-
-        lights.insert(p);
-
-        cout << *gaps.rbegin() << " ";
+//k subarray krne toh k-1 cuts krne honge naa
+bool check(int mid,vector<int>& v,int k){
+    int sum=0,count=0;
+    for(int i=0;i<v.size();i++){
+        sum+=v[i];
+        if(sum>mid){
+            count++;
+            sum=v[i];
+        }
     }
+    return count<k;
+}
+void solve() {
+    int n,k;
+    cin>>n>>k;
+
+    getv(v,n);
+
+    int left = *max_element(all(v));
+    int right = accumulate(all(v), 0LL);
+
+    while(left<right){
+        int mid=left+(right-left)/2;
+
+        if(check(mid,v,k)) {
+            right=mid;
+        } else {
+            left=mid+1;
+        }
+    }
+    cout<< left << endl;
 }
 
 signed main() {

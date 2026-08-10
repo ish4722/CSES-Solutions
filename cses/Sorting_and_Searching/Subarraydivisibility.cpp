@@ -37,39 +37,44 @@ typedef vector<pair<int,int>> vpi;
 const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
+/*
+(0,2) → [2,3]       sum = 5
+(0,4) → [2,3,1,4]   sum = 10
+(0,5) → [2,3,1,4,5] sum = 15
 
+(2,4) → [1,4]       sum = 5
+(2,5) → [1,4,5]     sum = 10
+
+(4,5) → [5]          sum = 5
+*/
 void solve() {
-    int x, n;
-    cin >> x >> n;
+    int n;
+    cin >> n;
 
-    set<int> lights;
-    multiset<int> gaps;
+    map<int, int> mp;
 
-    lights.insert(0);
-    lights.insert(x);
-    gaps.insert(x);
+    mp[0] = 1;
 
-    for (int i = 0; i < n; i++) {
-        int p;
-        cin >> p;
-        //saw the constraint tab idea aaya for binary search approach
-        auto it = lights.lower_bound(p);
+    int sum = 0;
+    int ans = 0;
 
-        int right = *it;
-        --it;
-        int left = *it;
+    f(i, 0, n) {
+        int x;
+        cin >> x;
 
-        // Remove old gap
-        gaps.erase(gaps.find(right - left));
+        sum += x;
 
-        // Add two new gaps
-        gaps.insert(p - left);
-        gaps.insert(right - p);
+        int rem = sum % n;
 
-        lights.insert(p);
+        if (rem < 0)
+            rem += n;
 
-        cout << *gaps.rbegin() << " ";
+        ans += mp[rem];
+
+        mp[rem]++;
     }
+
+    cout << ans << endl;
 }
 
 signed main() {

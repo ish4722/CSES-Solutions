@@ -39,37 +39,47 @@ const int mod = 1000000007;
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
 void solve() {
-    int x, n;
-    cin >> x >> n;
-
-    set<int> lights;
-    multiset<int> gaps;
-
-    lights.insert(0);
-    lights.insert(x);
-    gaps.insert(x);
-
-    for (int i = 0; i < n; i++) {
-        int p;
-        cin >> p;
-        //saw the constraint tab idea aaya for binary search approach
-        auto it = lights.lower_bound(p);
-
-        int right = *it;
-        --it;
-        int left = *it;
-
-        // Remove old gap
-        gaps.erase(gaps.find(right - left));
-
-        // Add two new gaps
-        gaps.insert(p - left);
-        gaps.insert(right - p);
-
-        lights.insert(p);
-
-        cout << *gaps.rbegin() << " ";
+    int n;
+    cin>>n;
+    set<int> s;
+    f(i,1,n+1) s.insert(i);
+    bool found=false;
+    vector<int> ans;
+    while(s.size()){
+        for(auto it = s.begin(); it != s.end(); ) {
+            if(found) {
+                ans.push_back(*it);
+                it = s.erase(it);
+                found = false;
+            }
+            else {
+                found = true;
+                ++it;
+            }
+        }
     }
+    f(i,0,n) cout<<ans[i]<<" ";
+}
+void solve() {
+    int n;
+    cin >> n;
+
+    queue<int> q;
+
+    for (int i = 1; i <= n; i++)
+        q.push(i);
+
+    while (q.size() > 1) {
+        // skip one child
+        q.push(q.front());
+        q.pop();
+
+        // remove the next child
+        cout << q.front() << " ";
+        q.pop();
+    }
+
+    cout << q.front() << "\n";
 }
 
 signed main() {

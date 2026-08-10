@@ -39,37 +39,22 @@ const int mod = 1000000007;
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
 void solve() {
-    int x, n;
-    cin >> x >> n;
+    int n,x;
+    cin>>n>>x;
 
-    set<int> lights;
-    multiset<int> gaps;
+    vector<int> v(n);
+    f(i,0,n) cin>>v[i];
 
-    lights.insert(0);
-    lights.insert(x);
-    gaps.insert(x);
+    map<int,int> mp;
+    mp[0]=1;
+    int sum=0,ans=0;
 
-    for (int i = 0; i < n; i++) {
-        int p;
-        cin >> p;
-        //saw the constraint tab idea aaya for binary search approach
-        auto it = lights.lower_bound(p);
-
-        int right = *it;
-        --it;
-        int left = *it;
-
-        // Remove old gap
-        gaps.erase(gaps.find(right - left));
-
-        // Add two new gaps
-        gaps.insert(p - left);
-        gaps.insert(right - p);
-
-        lights.insert(p);
-
-        cout << *gaps.rbegin() << " ";
+    f(i,0,n){
+        sum+=v[i];
+        if(mp.find(sum-x)!=mp.end()) ans+=mp[sum-x];
+        mp[sum]++;
     }
+    cout<< ans<< endl;
 }
 
 signed main() {
