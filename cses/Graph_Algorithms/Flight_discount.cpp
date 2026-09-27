@@ -49,7 +49,7 @@ signed main(){
         auto [d,node,used]=pq.top();
         pq.pop();
 
-        if(d!=dist[node][used]) continue;
+        if(d>dist[node][used]) continue;
         for(auto [next,w]:adj[node]){
 
             if(used==0){

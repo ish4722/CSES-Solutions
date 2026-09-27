@@ -38,32 +38,51 @@ const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
-
-void dfs(int node, vector<vector<int>>& tree, vector<int>& subordinates) {
-    for (int child : tree[node]) {
-        dfs(child, tree, subordinates);
-        subordinates[node] += subordinates[child];
-    }
+vector<int> parent,sz;
+int par(int u){
+    if(u==parent[u]) return u;
+    return parent[u]=par(parent[u]);
+}
+void unite(int a,int b){
+    int u=par(a);
+    int v=par(b);
+    if(u==v) return;
+    if(sz[u]<sz[v]) swap(u,v);
+    parent[v]=u;
+    sz[u]+=sz[v];
 }
 
-void solve() {
-    vector<vector<int>> tree;
+// void solve() {
+//     int n,m;
+//     cin>>n>>m;
 
-    int n; cin >> n;
-    tree.resize(n + 1);
-    f(i, 2, n + 1) {
-        int p; 
-        cin >> p;
-        tree[p].push_back(i);
-    }
-    vector<int> subordinates(n + 1, 1);
-    dfs(1, tree, subordinates);
+//     parent.resize(n);
+//     f(i,0,n) parent[i]=i;
+//     sz.assign(n,1);
 
-    f(i, 1, n + 1) {
-        cout << subordinates[i]-1 << " ";
-    }
+//     f(i,0,m){
+//         int a,b;
+//         cin>>a>>b;
+//         unite(a-1,b-1);
+//     }
 
-}
+//     map<int,int> mp;
+//     int cnt=0;
+
+//     for(int i=0;i<n;i++){
+//         int root=par(i);
+
+//         if(!mp.count(root))
+//             mp[root]=++cnt;
+//     }
+
+//     cout<<cnt<<endl;
+
+//     for(int i=0;i<n;i++){
+//         cout<<mp[par(i)]<<" ";
+//     }
+//     cout<<endl;
+// }
 
 signed main() {
     ez;

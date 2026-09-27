@@ -38,45 +38,37 @@ const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
-//though its a DAG WE MAY USE PQ,AS WE ARE KEEPING 
-// A CNT ARRAY TO LIMIT A NUMBER OF NODE USE
 void solve() {
-    int n,m,k;
-    cin>>n>>m>>k;
+    int n,m,q;
+    cin>>n>>m>>q;
+
     vector<vector<pair<int,int>>> adj(n+1);
-
-    f(i,0,m){
-        int u,v,w;
-        cin>>u>>v>>w;
-        adj[u].push_back({v,w});
+    f(i,0,m) {
+        int a,b,c;
+        cin >> a >> b >> c;
+        adj[a].push_back({b,c});
+        adj[b].push_back({a,c});
     }
+    vector<vector<int>> dist(n+1, vector<int>(n+1, 1e18));
 
-    vector<int>cnt(n+1,0);
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-
-    pq.push({0,1});
-    cnt[1] = 0;
-    priority_queue<int, vector<int>, greater<int>> ans;
-    while(!pq.empty()){
-        auto [d,u] = pq.top();
-        pq.pop();
-        if(cnt[u]>=k) continue;
-        if(u==n) ans.push(d);
-// How many shortest paths to this node have been finalized?
-// A path is finalized only when it is popped, not when it is pushed.
-        cnt[u]++;
-        for(auto [v,w]: adj[u]){
-                pq.push({d+w,v});
-        }
-    }
-    while(k--) {
-        if(ans.empty()) cout<<-1<<endl;
-        else{
-            cout<<ans.top()<<endl;
-            ans.pop();
+    vector<vector<int>> dist(n+1,vector<int>(n+1,1e9));
+    for(int i=0;i<n;i++){
+        dist[i][i]=0;
+        for(auto [j,d]:adj[i]){
+            dist[i][j]=min(dist[i][j],d);
         }
     }
 
+    f(k,1,n){
+        f(i,1,n){
+            f(j,1,n){
+                if(dist[i][k] < 1e18 && dist[k][j] < 1e18) {
+                    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+                }
+            }
+        }
+    }
+    
 }
 
 signed main() {

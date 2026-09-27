@@ -37,46 +37,46 @@ typedef vector<pair<int,int>> vpi;
 const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
+const long long MOD = 1e9 + 7;
 
-//though its a DAG WE MAY USE PQ,AS WE ARE KEEPING 
-// A CNT ARRAY TO LIMIT A NUMBER OF NODE USE
+vector<vector<int>> adj;
+vector<vector<long long>> dp;
+
+void dfs(int u, int par){
+
+    dp[u][0] = 1;
+    dp[u][1] = 1;
+
+    for(auto v : adj[u]){
+
+        if(v == par) continue;
+
+        dfs(v,u);
+
+        dp[u][0] = dp[u][0] * (dp[v][0] + dp[v][1]) % MOD;
+
+        dp[u][1] = dp[u][1] * dp[v][0] % MOD;
+    }
+}
 void solve() {
-    int n,m,k;
-    cin>>n>>m>>k;
-    vector<vector<pair<int,int>>> adj(n+1);
+    int n;
+    cin >> n;
 
-    f(i,0,m){
-        int u,v,w;
-        cin>>u>>v>>w;
-        adj[u].push_back({v,w});
+    adj.resize(n+1);
+    dp.resize(n+1, vector<long long>(2,0));
+
+    for(int i=0;i<n-1;i++){
+
+        int x,y;
+        cin >> x >> y;
+
+        adj[x].push_back(y);
+        adj[y].push_back(x);
     }
 
-    vector<int>cnt(n+1,0);
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+    dfs(1,0);
 
-    pq.push({0,1});
-    cnt[1] = 0;
-    priority_queue<int, vector<int>, greater<int>> ans;
-    while(!pq.empty()){
-        auto [d,u] = pq.top();
-        pq.pop();
-        if(cnt[u]>=k) continue;
-        if(u==n) ans.push(d);
-// How many shortest paths to this node have been finalized?
-// A path is finalized only when it is popped, not when it is pushed.
-        cnt[u]++;
-        for(auto [v,w]: adj[u]){
-                pq.push({d+w,v});
-        }
-    }
-    while(k--) {
-        if(ans.empty()) cout<<-1<<endl;
-        else{
-            cout<<ans.top()<<endl;
-            ans.pop();
-        }
-    }
-
+    cout << (dp[1][0] + dp[1][1]) % MOD << endl;
 }
 
 signed main() {

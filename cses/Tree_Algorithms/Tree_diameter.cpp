@@ -45,7 +45,6 @@ int far_node=1;
 void dfs(int u, int dist) {
 
     used[u] = 1;
-
     if(dist > ans) {
         ans = dist;
         far_node=u;

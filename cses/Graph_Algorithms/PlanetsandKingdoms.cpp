@@ -39,7 +39,7 @@ void dfs(int node, vector<vector<int>>& adj, vector<int>& vis) {
         }
     }
 
-    topo.push_back(node);
+    topo.push_back(node);//finishing-time ordering
 }
 
 void dfs2(int node, vector<vector<int>>& adj, vector<int>& vis,vector<int> &representative) {
@@ -82,6 +82,10 @@ void solve() {
     }
 
     // Second DFS in reverse finishing order
+    // The finishing-time ordering ensures that 
+    // when we start DFS on the reversed graph, 
+    // we start from the appropriate SCC and don't
+    //  accidentally merge multiple SCCs.
     int components = 0;
     vector<vector<int>> representatives;
 

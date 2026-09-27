@@ -38,15 +38,47 @@ const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
+const int LOG = 31;
+const int MAXN = 200005;
+
+int up[MAXN][LOG];
+
+
 void solve() {
-    
+    int n, q;
+    cin >> n >> q;
+
+    for(int i = 1; i <= n; i++)
+        cin >> up[i][0];
+
+    // Build
+    for(int j = 1; j < LOG; j++) {
+        for(int i = 1; i <= n; i++) {
+            up[i][j] = up[up[i][j - 1]][j - 1];
+        }
+    }
+
+    while(q--) {
+        int x;
+        long long k;
+
+        cin >> x >> k;
+
+        for(int j = 0; j < LOG; j++) {
+            if(k & (1LL << j)) {
+                x = up[x][j];
+            }
+        }
+
+        cout << x << '\n';
+    }
 }
 
 signed main() {
     ez;
 
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--) solve();
 
     return 0;

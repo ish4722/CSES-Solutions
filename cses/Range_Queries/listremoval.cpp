@@ -38,43 +38,54 @@ const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
-//though its a DAG WE MAY USE PQ,AS WE ARE KEEPING 
-// A CNT ARRAY TO LIMIT A NUMBER OF NODE USE
+vector<int> tree,nums;
+int n;
+
+void add(int value,int index){
+    while(index<=n){ tree[index]+=value; index+=index&(-index);} }
+int prefix(int index){
+    int sum=0;
+    while(index>0){
+        sum+=tree[index];
+        index-=index&(-index);
+    }
+    return sum;
+}
+int findKth(int k) {
+    int l = 1, r = n;
+
+    while (l < r) {
+        int mid = l + (r - l) / 2;
+
+        if (prefix(mid) >= k)
+            r = mid;
+        else
+            l = mid + 1;
+    }
+    return l;
+}
 void solve() {
-    int n,m,k;
-    cin>>n>>m>>k;
-    vector<vector<pair<int,int>>> adj(n+1);
+    cin>>n;
+    nums.resize(n);
+    tree.assign(n + 1, 0);
 
-    f(i,0,m){
-        int u,v,w;
-        cin>>u>>v>>w;
-        adj[u].push_back({v,w});
-    }
+    for (int i = 0; i < n; i++) cin >> nums[i];
 
-    vector<int>cnt(n+1,0);
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+    // Initially every element is alive
+    for (int i = 1; i <= n; i++)
+        add(1, i);
 
-    pq.push({0,1});
-    cnt[1] = 0;
-    priority_queue<int, vector<int>, greater<int>> ans;
-    while(!pq.empty()){
-        auto [d,u] = pq.top();
-        pq.pop();
-        if(cnt[u]>=k) continue;
-        if(u==n) ans.push(d);
-// How many shortest paths to this node have been finalized?
-// A path is finalized only when it is popped, not when it is pushed.
-        cnt[u]++;
-        for(auto [v,w]: adj[u]){
-                pq.push({d+w,v});
-        }
-    }
-    while(k--) {
-        if(ans.empty()) cout<<-1<<endl;
-        else{
-            cout<<ans.top()<<endl;
-            ans.pop();
-        }
+    // Removals
+    for (int i = 0; i < n; i++) {
+        int k;
+        cin >> k;
+
+        int idx = findKth(k);
+
+        cout << nums[idx - 1] << " ";
+
+        // Remove this element
+        add(-1, idx);
     }
 
 }

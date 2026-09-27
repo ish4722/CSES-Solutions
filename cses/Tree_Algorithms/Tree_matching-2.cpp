@@ -38,45 +38,34 @@ const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
-//though its a DAG WE MAY USE PQ,AS WE ARE KEEPING 
-// A CNT ARRAY TO LIMIT A NUMBER OF NODE USE
+void dfs(int node, int parent, vector<vector<int>>& adj, vector<vector<int>>& dp) {
+    for(auto u : adj[node]){
+        if(u != parent){
+            dfs(u, node, adj, dp);
+            dp[node][0]+= max(dp[u][0], dp[u][1]);
+        }
+    }
+    dp[node][1] = -1e9;
+    for(auto u : adj[node]){
+        if(u != parent){
+            dp[node][1] = max(dp[node][1], dp[node][0] - max(dp[u][0], dp[u][1]) + 1 + dp[u][0]);
+        }
+    }
+}
 void solve() {
-    int n,m,k;
-    cin>>n>>m>>k;
-    vector<vector<pair<int,int>>> adj(n+1);
-
-    f(i,0,m){
-        int u,v,w;
-        cin>>u>>v>>w;
-        adj[u].push_back({v,w});
+    int n;
+    cin >> n;
+    vector<vector<int>> adj(n+1);
+    f(i,0,n-1){
+        int a,b; 
+        cin>>a>>b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
     }
+    vector<vector<int>> dp(n+1,vector<int>(2,0));
 
-    vector<int>cnt(n+1,0);
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-
-    pq.push({0,1});
-    cnt[1] = 0;
-    priority_queue<int, vector<int>, greater<int>> ans;
-    while(!pq.empty()){
-        auto [d,u] = pq.top();
-        pq.pop();
-        if(cnt[u]>=k) continue;
-        if(u==n) ans.push(d);
-// How many shortest paths to this node have been finalized?
-// A path is finalized only when it is popped, not when it is pushed.
-        cnt[u]++;
-        for(auto [v,w]: adj[u]){
-                pq.push({d+w,v});
-        }
-    }
-    while(k--) {
-        if(ans.empty()) cout<<-1<<endl;
-        else{
-            cout<<ans.top()<<endl;
-            ans.pop();
-        }
-    }
-
+    dfs(1,0,adj,dp);
+    cout<<max(dp[1][0],dp[1][1])<<endl;
 }
 
 signed main() {

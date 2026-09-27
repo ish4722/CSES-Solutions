@@ -80,7 +80,7 @@ void solve() {
         }
     }
 
-    vector<vector<int>> parent(n, vector<int>(m, -1));
+    vector<vector<char>> parent(n, vector<char>(m));
     vector<char> path={'D', 'U', 'R', 'L'};
 
     f(i,0,n) {
@@ -88,10 +88,13 @@ void solve() {
             if (g[i][j]== 'A') {
                 q.push({i,j});
                 dist2[i][j] = 0;
+                break;
             } 
         }
     }
-
+        int start_i=q.front().first;
+        int start_j=q.front().second;
+        
     while(!q.empty()){
         int i=q.front().first;
         int j=q.front().second;
@@ -103,12 +106,14 @@ void solve() {
 
             cout<<dist2[i][j]<<endl;
 
-            while(parent[i][j]!=-1){
-                ans+=path[parent[i][j]];
-                int ni=i-dx[parent[i][j]];
-                int nj=j-dy[parent[i][j]];
-                i=ni;
-                j=nj;
+            while(i != start_i || j != start_j) {
+                ans += parent[i][j];
+
+                if(parent[i][j] == 'D') i--;
+                else if(parent[i][j] == 'U') i++;
+                else if(parent[i][j] == 'R') j--;
+                else if(parent[i][j] == 'L') j++;
+
             }
             reverse(ans.begin(), ans.end());
             cout<<ans<<endl;
@@ -119,9 +124,9 @@ void solve() {
             int ni= i + dx[k];
             int nj= j + dy[k];
 
-            if(ni>=0 && ni<n && nj>=0 && nj<m && dist2[ni][nj]==-1 && g[ni][nj]=='.' && (dist[ni][nj] == -1 ||dist2[i][j] +1 < dist[ni][nj])){
+            if(ni>=0 && ni<n && nj>=0 && nj<m && dist2[ni][nj]==-1 && g[ni][nj]=='.'){
                 dist2[ni][nj] = dist2[i][j] + 1;
-                parent[ni][nj] = k;
+                parent[ni][nj] = path[k];
                 q.push({ni,nj});
             }
         }

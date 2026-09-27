@@ -37,46 +37,26 @@ typedef vector<pair<int,int>> vpi;
 const int mod = 1000000007;
 
 int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
+int n;
+int cal(int mask,int u,vector<vector<int>>& adj,vector<vector<int>>& dp){
+    if(mask== (1<<adj.size())-1){
+        return u==n-1;
+    }
+    if(dp[mask][u]!=-1) return dp[mask][u];
 
-//though its a DAG WE MAY USE PQ,AS WE ARE KEEPING 
-// A CNT ARRAY TO LIMIT A NUMBER OF NODE USE
+    long long ans=0;
+    for(int v:adj[u]){
+        if(mask & (1<<v)) continue;
+
+        int new_mask=mask|(1<<v);
+        if(v==n-1 && new_mask!=(1<<n)-1) continue;
+
+        ans+=cal(new_mask,v,adj,dp);
+    }
+    return dp[mask][u]=ans;
+}
 void solve() {
-    int n,m,k;
-    cin>>n>>m>>k;
-    vector<vector<pair<int,int>>> adj(n+1);
-
-    f(i,0,m){
-        int u,v,w;
-        cin>>u>>v>>w;
-        adj[u].push_back({v,w});
-    }
-
-    vector<int>cnt(n+1,0);
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-
-    pq.push({0,1});
-    cnt[1] = 0;
-    priority_queue<int, vector<int>, greater<int>> ans;
-    while(!pq.empty()){
-        auto [d,u] = pq.top();
-        pq.pop();
-        if(cnt[u]>=k) continue;
-        if(u==n) ans.push(d);
-// How many shortest paths to this node have been finalized?
-// A path is finalized only when it is popped, not when it is pushed.
-        cnt[u]++;
-        for(auto [v,w]: adj[u]){
-                pq.push({d+w,v});
-        }
-    }
-    while(k--) {
-        if(ans.empty()) cout<<-1<<endl;
-        else{
-            cout<<ans.top()<<endl;
-            ans.pop();
-        }
-    }
-
+    
 }
 
 signed main() {
